@@ -1,0 +1,60 @@
+/* Apply styles to the header */
+header {
+    background-color: #405DE6; /* Blue background color */
+    padding: 20px;
+    text-align: center;
+}
+
+header img {
+    width: 100px; /* Adjust the logo size as needed */
+}
+
+/* Style the page container */
+.container {
+    max-width: 600px; /* Adjust the maximum width as needed */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Style the page titles */
+.page h1 {
+    font-size: 24px;
+    color: #333; /* Dark text color */
+}
+
+/* Style form labels */
+label {
+    font-size: 16px;
+    color: #333; /* Dark text color */
+}
+
+/* Style input fields and buttons */
+input[type="text"],
+input[type="password"],
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px;
+}
+
+button {
+    background-color: #405DE6; /* Blue button color */
+    color: #fff; /* White text color */
+    cursor: pointer;
+}
+
+/* Style links */
+a {
+    color: #405DE6; /* Blue link color */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #1E90FF; /* Light blue link color on hover */
+}
+.large-text {
+    font-size: 45px; /* You can adjust the value (e.g., 36px) to make it larger or smaller as needed. */
+}
