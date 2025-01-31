@@ -1,60 +1,178 @@
-/* Apply styles to the header */
-header {
-    background-color: #405DE6; /* Blue background color */
-    padding: 20px;
-    text-align: center;
+/* === Base Styles === */
+:root {
+    --primary: #ff4757;
+    --secondary: #2f3542;
+    --accent: #70a1ff;
+    --text: #f1f2f6;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
 }
 
-header img {
-    width: 100px; /* Adjust the logo size as needed */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
 }
 
-/* Style the page container */
-.container {
-    max-width: 600px; /* Adjust the maximum width as needed */
-    margin: 0 auto;
-    padding: 20px;
+body {
+    background: var(--secondary);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui;
+    line-height: 1.6;
 }
 
-/* Style the page titles */
-.page h1 {
-    font-size: 24px;
-    color: #333; /* Dark text color */
+/* === Navigation === */
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    background: linear-gradient(45deg, var(--primary), #ff6b6b);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-lg);
 }
 
-/* Style form labels */
-label {
-    font-size: 16px;
-    color: #333; /* Dark text color */
+.nav-brand {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Style input fields and buttons */
-input[type="text"],
-input[type="password"],
-button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 5px;
+.nav-links {
+    display: flex;
+    gap: 2rem;
 }
 
-button {
-    background-color: #405DE6; /* Blue button color */
-    color: #fff; /* White text color */
-    cursor: pointer;
-}
-
-/* Style links */
-a {
-    color: #405DE6; /* Blue link color */
+.nav-link {
+    color: var(--text);
     text-decoration: none;
-    transition: color 0.3s;
+    font-weight: 500;
+    position: relative;
+    transition: var(--transition);
 }
 
-a:hover {
-    color: #1E90FF; /* Light blue link color on hover */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--text);
+    transition: var(--transition);
 }
-.large-text {
-    font-size: 45px; /* You can adjust the value (e.g., 36px) to make it larger or smaller as needed. */
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* === Anime Grid === */
+.anime-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.anime-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+}
+
+.anime-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.anime-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.8));
+    z-index: 1;
+}
+
+.anime-thumbnail {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+}
+
+.anime-info {
+    padding: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* === Video Player === */
+.video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.95);
+    z-index: 2000;
+    display: none;
+    place-items: center;
+}
+
+.video-container {
+    width: 90%;
+    max-width: 1200px;
+    position: relative;
+}
+
+/* === Authentication Modal === */
+.auth-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--secondary);
+    padding: 3rem;
+    border-radius: 15px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: var(--shadow-lg);
+    display: none;
+    z-index: 3000;
+}
+
+/* === Animations === */
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes loaderSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+    .main-nav {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .anime-grid {
+        grid-template-columns: 1fr;
+    }
 }

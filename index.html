@@ -3,40 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeleAzur</title>
+    <title>ANAMA Pro - Ultimate Anime Experience</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Common Header (logo and language switch) -->
-    <header>
-        <img src="teat/imgs/logo.png" alt="Logo">
-    </header>
-    <link rel="stylesheet" href="styles.css">
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-brand">ANAMA</div>
+        <div class="nav-links">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#trending" class="nav-link">Trending</a>
+            <a href="#watchlist" class="nav-link">Watchlist</a>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="Search anime...">
+            <button class="search-btn">🔍</button>
+        </div>
+    </nav>
 
-    <!-- Page Content -->
-    <div class="container">
-        <!-- Home Page -->
-        <div>
-            <h1 class="large-text"> TeleAzur </h1> </div>
-        <div id="home" class="page">
-            <h3>Your social world,Share your moments with TeleAzur.</h3>
-            <form action="login.html" method="POST">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required><br><br>
-                
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required><br><br>
-                
-                <button type="submit">Login</button>
-            </form>
-            <p>
-                <a href="New-Account.html">Create a New Account</a> | 
-                <a href="guest.html">Open as a Guest</a>
-            </p>
+    <!-- Main Content -->
+    <main class="content-area" id="main-content">
+        <!-- Dynamic content loaded here -->
+    </main>
+
+    <!-- Video Player -->
+    <div class="video-overlay" id="player-overlay">
+        <div class="video-container">
+            <video id="main-player"></video>
+            <div class="quality-selector">
+                <button data-quality="1080">1080p</button>
+                <button data-quality="720">720p</button>
+                <button data-quality="480">480p</button>
+            </div>
         </div>
     </div>
-    <footer> <div>
-        <a href="?lang=en">English</a> | <a href="?lang=ar">العربية</a>
+
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="auth-modal">
+        <!-- Auth content loaded here -->
     </div>
-</footer>
+
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
