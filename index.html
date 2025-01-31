@@ -1,51 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANAMA Pro - Ultimate Anime Experience</title>
+    <title>ANAMA Pro - Premium Anime Streaming</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="main-nav">
-        <div class="nav-brand">ANAMA</div>
-        <div class="nav-links">
-            <a href="#home" class="nav-link active">Home</a>
-            <a href="#trending" class="nav-link">Trending</a>
-            <a href="#watchlist" class="nav-link">Watchlist</a>
+    <!-- 3D Animated Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-brand">
+            <div class="logo-sphere"></div>
+            <h1>ANAMA</h1>
         </div>
-        <div class="search-box">
-            <input type="text" placeholder="Search anime...">
-            <button class="search-btn">🔍</button>
+        
+        <div class="nav-search">
+            <input type="text" placeholder="Search 10,000+ Anime..." class="neon-input">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="nav-controls">
+            <button class="auth-btn pulse"><i class="fas fa-user"></i></button>
+            <button class="theme-toggle"><i class="fas fa-moon"></i></button>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="content-area" id="main-content">
-        <!-- Dynamic content loaded here -->
+    <!-- Main Content Container -->
+    <main class="content-container">
+        <!-- Dynamic Hero Section -->
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <h2 class="gradient-text">Newest Release</h2>
+                <div class="hero-card">
+                    <div class="hero-poster"></div>
+                    <div class="hero-info">
+                        <h3>Demon Slayer: Kimetsu no Yaiba</h3>
+                        <div class="meta-tags">
+                            <span class="rating"><i class="fas fa-star"></i> 8.7</span>
+                            <span class="episodes"><i class="fas fa-play-circle"></i> 26 Episodes</span>
+                            <span class="quality">4K HDR</span>
+                        </div>
+                        <button class="play-btn"><i class="fas fa-play"></i> Watch Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Anime Grid Section -->
+        <section class="anime-grid-section">
+            <h3 class="section-title">Popular This Week</h3>
+            <div class="anime-grid" id="anime-grid">
+                <!-- Dynamic grid items injected via JS -->
+            </div>
+        </section>
     </main>
 
-    <!-- Video Player -->
+    <!-- Floating Video Player -->
     <div class="video-overlay" id="player-overlay">
         <div class="video-container">
             <video id="main-player"></video>
-            <div class="quality-selector">
-                <button data-quality="1080">1080p</button>
-                <button data-quality="720">720p</button>
-                <button data-quality="480">480p</button>
+            <div class="player-controls">
+                <div class="quality-selector">
+                    <button data-quality="4k" class="active">4K</button>
+                    <button data-quality="1080">1080p</button>
+                    <button data-quality="720">720p</button>
+                </div>
+                <button class="close-player"><i class="fas fa-times"></i></button>
             </div>
         </div>
     </div>
 
     <!-- Authentication Modal -->
     <div class="auth-modal" id="auth-modal">
-        <!-- Auth content loaded here -->
+        <div class="auth-container">
+            <div class="auth-tabs">
+                <button class="tab active" data-tab="login">Login</button>
+                <button class="tab" data-tab="register">Register</button>
+            </div>
+            
+            <form class="auth-form" id="login-form">
+                <div class="form-group">
+                    <input type="email" placeholder="Email" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button type="submit" class="auth-submit">Enter World</button>
+            </form>
+
+            <form class="auth-form" id="register-form" style="display: none;">
+                <!-- Registration form fields -->
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="scripts.js"></script>
+    <script src="js/main.js" type="module"></script>
 </body>
 </html>

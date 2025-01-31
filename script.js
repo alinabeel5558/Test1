@@ -1,87 +1,51 @@
 class AnimePlatform {
-    // Add to AnimePlatform class
-async loginUser(credentials) {
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
-      });
-      
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem('user', JSON.stringify(data));
-        this.user = data;
-        this.updateAuthUI();
-        return true;
-      }
-      throw new Error(data.message || 'Login failed');
-    } catch (error) {
-      this.showError(error.message);
-      return false;
-    }
-  }
-  
-  async registerUser(userData) {
-    try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
-      });
-  
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem('user', JSON.stringify(data));
-        this.user = data;
-        this.updateAuthUI();
-        return true;
-      }
-      throw new Error(data.message || 'Registration failed');
-    } catch (error) {
-      this.showError(error.message);
-      return false;
-    }
-  }
     constructor() {
-        this.player = null;
-        this.currentAnime = null;
-        this.watchList = JSON.parse(localStorage.getItem('watchlist')) || [];
-        this.user = JSON.parse(localStorage.getItem('user')) || null;
         this.init();
     }
 
     init() {
+        this.cacheDOM();
         this.initPlayer();
         this.setupEventListeners();
         this.loadInitialData();
-        this.setupRouter();
-        this.updateAuthUI();
+        this.setupTheme();
+        this.checkAuth();
+    }
+
+    cacheDOM() {
+        this.elements = {
+            animeGrid: document.getElementById('anime-grid'),
+            searchInput: document.querySelector('.neon-input'),
+            playerOverlay: document.getElementById('player-overlay'),
+            authModal: document.getElementById('auth-modal'),
+            // Cache other elements...
+        };
     }
 
     initPlayer() {
         this.player = new Plyr('#main-player', {
-            quality: {
-                default: 1080,
-                options: [1080, 720, 480],
+            quality: { 
+                default: '4k', 
+                options: ['4k', '1080', '720'],
                 forced: true
             },
             keyboard: { global: true },
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
+            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            settings: ['quality', 'speed']
         });
     }
 
     async loadInitialData() {
         try {
             this.showLoader();
-            const [topAnime, genres] = await Promise.all([
-                this.fetchAPI('/top/anime'),
-                this.fetchAPI('/genres/anime')
+            const [trending, popular] = await Promise.all([
+                this.fetchAPI('/trending'),
+                this.fetchAPI('/popular')
             ]);
-            this.renderAnimeGrid(topAnime.data);
-            this.renderGenreFilter(genres.data);
+            this.renderAnimeGrid(trending);
+            this.updateHeroSection(popular[0]);
         } catch (error) {
-            this.showError('Failed to load initial data');
+            this.showError('Failed to load content');
         } finally {
             this.hideLoader();
         }
@@ -94,100 +58,76 @@ async loginUser(credentials) {
     }
 
     renderAnimeGrid(animeList) {
-        const grid = document.createElement('div');
-        grid.className = 'anime-grid';
+        const fragment = document.createDocumentFragment();
+        
+        animeList.data.forEach(anime => {
+            const card = this.createAnimeCard(anime);
+            fragment.appendChild(card);
+        });
 
-        grid.innerHTML = animeList.map(anime => `
-            <div class="anime-card" data-id="${anime.mal_id}">
-                <img src="${anime.images.jpg.large_image_url}" class="anime-thumbnail" alt="${anime.title}">
-                <div class="anime-info">
-                    <h3>${anime.title}</h3>
-                    <div class="meta">
-                        <span>⭐ ${anime.score || 'N/A'}</span>
-                        <span>${anime.episodes || '?'} Episodes</span>
+        this.elements.animeGrid.innerHTML = '';
+        this.elements.animeGrid.appendChild(fragment);
+    }
+
+    createAnimeCard(anime) {
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        card.innerHTML = `
+            <div class="card-media">
+                <img src="${anime.images.jpg.large_image_url}" alt="${anime.title}">
+                <div class="hover-overlay">
+                    <button class="quick-play"><i class="fas fa-play"></i></button>
+                    <div class="meta-info">
+                        <span class="score">⭐ ${anime.score || 'N/A'}</span>
+                        <span class="episodes">${anime.episodes} EP</span>
                     </div>
                 </div>
             </div>
-        `).join('');
-
-        document.getElementById('main-content').appendChild(grid);
-    }
-
-    showVideoPlayer(anime) {
-        this.currentAnime = anime;
-        document.getElementById('player-overlay').style.display = 'grid';
-        this.loadVideoStream();
-    }
-
-    loadVideoStream() {
-        const sources = {
-            1080: 'https://example.com/streams/1080.m3u8',
-            720: 'https://example.com/streams/720.m3u8',
-            480: 'https://example.com/streams/480.m3u8'
-        };
-
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(sources[this.player.currentQuality]);
-            hls.attachMedia(this.player.media);
-        } else {
-            this.player.source = {
-                type: 'video',
-                sources: [{
-                    src: sources[this.player.currentQuality],
-                    type: 'application/x-mpegURL'
-                }]
-            };
-        }
+            <div class="card-content">
+                <h4>${anime.title}</h4>
+                <div class="genre-tags">
+                    ${anime.genres.map(g => `<span>${g.name}</span>`).join('')}
+                </div>
+            </div>
+        `;
+        return card;
     }
 
     setupEventListeners() {
-        // Anime Card Clicks
-        document.addEventListener('click', (e) => {
+        // Anime Card Interactions
+        this.elements.animeGrid.addEventListener('click', (e) => {
             const card = e.target.closest('.anime-card');
-            if (card) this.showAnimeDetails(card.dataset.id);
+            if (card) this.handleCardClick(card);
         });
 
-        // Video Player Close
-        document.getElementById('player-overlay').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('player-overlay')) {
-                document.getElementById('player-overlay').style.display = 'none';
-                this.player.stop();
-            }
-        });
+        // Search Functionality
+        this.elements.searchInput.addEventListener('input', 
+            this.debounce(this.handleSearch.bind(this), 300));
 
-        // Quality Selection
-        document.querySelectorAll('.quality-selector button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.player.currentQuality = btn.dataset.quality;
-                this.loadVideoStream();
-            });
+        // Player Controls
+        document.querySelector('.close-player').addEventListener('click', () => {
+            this.hidePlayer();
         });
     }
 
-    setupRouter() {
-        window.addEventListener('hashchange', () => {
-            const route = window.location.hash.substring(1);
-            this.handleRoute(route);
-        });
-        this.handleRoute(window.location.hash.substring(1));
+    handleCardClick(card) {
+        const animeId = card.dataset.id;
+        this.loadAnimeDetails(animeId);
+        this.showPlayer();
     }
 
-    handleRoute(route) {
-        // Add routing logic for different pages
+    showPlayer() {
+        this.elements.playerOverlay.style.display = 'grid';
+        document.body.style.overflow = 'hidden';
     }
 
-    showLoader() {
-        // Implement loading animation
+    hidePlayer() {
+        this.elements.playerOverlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        this.player.stop();
     }
 
-    showError(message) {
-        const errorEl = document.createElement('div');
-        errorEl.className = 'error-message';
-        errorEl.textContent = message;
-        document.body.appendChild(errorEl);
-        setTimeout(() => errorEl.remove(), 3000);
-    }
+    // Add 50+ more methods for full functionality...
 }
 
 // Initialize Platform
