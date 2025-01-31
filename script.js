@@ -1,4 +1,48 @@
 class AnimePlatform {
+    // Add to AnimePlatform class
+async loginUser(credentials) {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('user', JSON.stringify(data));
+        this.user = data;
+        this.updateAuthUI();
+        return true;
+      }
+      throw new Error(data.message || 'Login failed');
+    } catch (error) {
+      this.showError(error.message);
+      return false;
+    }
+  }
+  
+  async registerUser(userData) {
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('user', JSON.stringify(data));
+        this.user = data;
+        this.updateAuthUI();
+        return true;
+      }
+      throw new Error(data.message || 'Registration failed');
+    } catch (error) {
+      this.showError(error.message);
+      return false;
+    }
+  }
     constructor() {
         this.player = null;
         this.currentAnime = null;
